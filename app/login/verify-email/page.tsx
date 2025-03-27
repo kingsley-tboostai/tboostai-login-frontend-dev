@@ -1,79 +1,80 @@
-"use client"
+'use client';
 
-import { Suspense } from 'react'
-import { useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { useToast } from "@/hooks/use-toast"
-import { Loader2 } from "lucide-react"
-import { authApi } from "@/lib/axios"  
-import { getAuth, setAuth } from "@/lib/auth"    
-import { AxiosError } from "axios"
-import { eventService } from '@/lib/event'  // 添加这行
+import { Suspense } from 'react';
+import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
+import { Loader2 } from 'lucide-react';
+import { authApi } from '@/lib/axios';
+import { getAuth, setAuth } from '@/lib/auth';
+import { AxiosError } from 'axios';
 
 export default function VerifyEmailPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <VerifyEmailContent />
     </Suspense>
-  )
+  );
 }
 
 function VerifyEmailContent() {
-  const [verificationCode, setVerificationCode] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const { toast } = useToast()
-  const email = searchParams.get("email")
+  const [verificationCode, setVerificationCode] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { toast } = useToast();
+  const email = searchParams.get('email');
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-  
+    e.preventDefault();
+    setIsLoading(true);
+
     try {
-      const { chatSessionId } = getAuth()
+      const { chatSessionId } = getAuth();
       const response = await authApi.post('/auth/email/verify', null, {
         params: {
           email: email,
           code: verificationCode,
-          session_id: chatSessionId
-        }
-      })
-  
-      const { token, user, needsProfile, session_id } = response.data
-      
+          session_id: chatSessionId,
+        },
+      });
+
+      const { token, user, needsProfile, session_id } = response.data;
+
       // 先触发 session 更新事件
-      window.dispatchEvent(new Event('session-updated'))
-      
+      window.dispatchEvent(new Event('session-updated'));
+
       // 然后设置认证信息
-      setAuth(token, user, session_id)
+      setAuth(token, user, session_id);
 
       toast({
-        title: "Success",
-        description: "Verification successful!",
-        duration: 2000
-      })
-  
+        title: 'Success',
+        description: 'Verification successful!',
+        duration: 2000,
+      });
+
       if (needsProfile) {
-        router.push('/signup/complete-profile')
+        router.push('/signup/complete-profile');
       } else {
-        router.push('/')
+        router.push('/');
       }
-  
     } catch (error: unknown) {
-      console.error("Error in verification:", error)
+      console.error('Error in verification:', error);
       toast({
-        title: "Verification Failed",
-        description: error instanceof AxiosError ? error.response?.data?.detail || "Invalid verification code" : "An unknown error occurred",
-        variant: "destructive",
-        duration: 3000
-      })
+        title: 'Verification Failed',
+        description:
+          error instanceof AxiosError
+            ? error.response?.data?.detail || 'Invalid verification code'
+            : 'An unknown error occurred',
+        variant: 'destructive',
+        duration: 3000,
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="container relative min-h-screen flex flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
@@ -82,7 +83,7 @@ function VerifyEmailContent() {
         {/* Absolute background with light blue color */}
         <div
           className="absolute inset-0"
-          style={{ backgroundColor: "#9ABFF1" }}
+          style={{ backgroundColor: '#9ABFF1' }}
         />
 
         {/* Centered content container */}
@@ -133,7 +134,12 @@ function VerifyEmailContent() {
               required
             />
             {/* <Button type="submit" className="w-full" disabled={isLoading}> */}
-            <Button type="submit" className="w-full text-white" disabled={isLoading} style={{ backgroundColor: '#2D5181' }}>
+            <Button
+              type="submit"
+              className="w-full text-white"
+              disabled={isLoading}
+              style={{ backgroundColor: '#2D5181' }}
+            >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Verify Code
             </Button>
@@ -141,5 +147,5 @@ function VerifyEmailContent() {
         </div>
       </div>
     </div>
-  )
+  );
 }
