@@ -32,19 +32,20 @@ export default function CompleteProfile() {
     )
 
       console.log("Response:", response.data)
-
       setAuth(token || '', {  // Add null check with empty string fallback
         ...user,
         full_name: fullName
       }, chatSessionId || undefined)
 
+      user['full_name'] = fullName
       toast({
         title: "Success",
         description: "Profile updated successfully!",
         duration: 2000
       })
-
-      router.push('https://car-quest.tboostai.com');
+      router.push(
+          `https://car-quest.tboostai.com/?token=${token}&user=${encodeURIComponent(JSON.stringify(user))}&session_id=${chatSessionId ? chatSessionId : ''}&ts=${Math.floor(Date.now() / 1000)}`
+      );
 
     } catch (error: AxiosError | unknown) {
       toast({

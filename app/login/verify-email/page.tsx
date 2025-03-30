@@ -58,7 +58,9 @@ function VerifyEmailContent() {
       if (needsProfile) {
         router.push('/signup/complete-profile');
       } else {
-        router.push('https://car-quest.tboostai.com');
+        router.push(
+            `https://car-quest.tboostai.com/?token=${token}&user=${encodeURIComponent(JSON.stringify(user))}&session_id=${chatSessionId ? chatSessionId : ''}&ts=${Math.floor(Date.now() / 1000)}`
+        );
       }
     } catch (error: unknown) {
       console.error('Error in verification:', error);
