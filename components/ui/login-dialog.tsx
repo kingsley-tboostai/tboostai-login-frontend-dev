@@ -28,13 +28,13 @@ export function LoginDialog({ open, onOpenChange }: LoginDialogProps) {
                     >
                         Log in
                     </Button>
-                    <Button 
+                    {/* <Button 
                         variant="outline" 
                         onClick={() => router.push('/signup')}
                         className="w-full border-[1px] border-black/10 hover:bg-gray-50 h-11"
                     >
                         Sign up
-                    </Button>
+                    </Button> */}
                     <Button
                         variant="ghost"
                         onClick={() => onOpenChange(false)}

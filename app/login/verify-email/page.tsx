@@ -58,7 +58,7 @@ function VerifyEmailContent() {
       if (needsProfile) {
         router.push('/signup/complete-profile');
       } else {
-        router.push('/');
+        router.push('https://car-quest.tboostai.com');
       }
     } catch (error: unknown) {
       console.error('Error in verification:', error);

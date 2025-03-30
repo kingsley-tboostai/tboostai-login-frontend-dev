@@ -44,7 +44,7 @@ export default function CompleteProfile() {
         duration: 2000
       })
 
-      router.push('/')
+      router.push('https://car-quest.tboostai.com');
 
     } catch (error: AxiosError | unknown) {
       toast({

@@ -1,39 +1,39 @@
-"use client"
+'use client';
 
-import React, { useEffect, Suspense } from 'react'
-import Link from "next/link"
-import { useSearchParams } from "next/navigation"
+import React, { useEffect, Suspense } from 'react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
-import { UserAuthForm } from "@/components/user-auth-form"
-import { toast } from '@/hooks/use-toast'
+// import { cn } from '@/lib/utils';
+// import { buttonVariants } from '@/components/ui/button';
+import { UserAuthForm } from '@/components/user-auth-form';
+import { toast } from '@/hooks/use-toast';
 
 export default function LoginPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <LoginContent />
     </Suspense>
-  )
+  );
 }
 
 function LoginContent() {
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    const error = searchParams.get('error')
+    const error = searchParams.get('error');
     if (error) {
       setTimeout(() => {
         toast({
-          title: "Authentication Error",
+          title: 'Authentication Error',
           description: error,
-          variant: "destructive",
-          duration: 5000
-        })
-      }, 0)
+          variant: 'destructive',
+          duration: 5000,
+        });
+      }, 0);
     }
-  }, [searchParams])
-  
+  }, [searchParams]);
+
   // useEffect(() => {
   //   console.log("=== Login Page ===")
   //   if (searchParams.get('status') === 'session_expired') {
@@ -50,21 +50,7 @@ function LoginContent() {
   // }, [searchParams])
   return (
     <div className="container relative min-h-screen flex flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
-      {/* <div className="absolute top-0 left-0 w-full h-[200px] md:hidden">
-        <Image
-          src="/examples/authentication-light.png"
-          fill
-          alt="Authentication"
-          className="object-cover block dark:hidden"
-        />
-        <Image
-          src="/examples/authentication-dark.png"
-          fill
-          alt="Authentication"
-          className="object-cover hidden dark:block"
-        />
-      </div> */}
-
+      {/* 注释掉 Sign Up 链接
       <Link
         href="/signup"
         className={cn(
@@ -74,13 +60,14 @@ function LoginContent() {
       >
         Sign Up
       </Link>
+      */}
 
       {/* 左侧装饰部分 */}
       <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
         {/* Absolute background with light blue color */}
         <div
           className="absolute inset-0"
-          style={{ backgroundColor: "#9ABFF1" }}
+          style={{ backgroundColor: '#9ABFF1' }}
         />
 
         {/* Centered content container */}
@@ -122,14 +109,14 @@ function LoginContent() {
           </div>
           <UserAuthForm />
           <p className="px-8 text-center text-sm text-muted-foreground">
-            By clicking continue, you agree to our{" "}
+            By clicking continue, you agree to our{' '}
             <Link
               href="/terms"
               className="underline underline-offset-4 hover:text-primary"
             >
               Terms of Service
-            </Link>{" "}
-            and{" "}
+            </Link>{' '}
+            and{' '}
             <Link
               href="/privacy"
               className="underline underline-offset-4 hover:text-primary"
@@ -141,6 +128,5 @@ function LoginContent() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-

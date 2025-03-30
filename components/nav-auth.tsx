@@ -1,6 +1,6 @@
 "use client"
 
-import { LogIn, UserPlus } from 'lucide-react'
+import { LogIn } from 'lucide-react'
 import {
   SidebarMenu,
   SidebarMenuItem,
@@ -11,9 +11,9 @@ import { useRouter } from 'next/navigation'
 export function NavAuth() {
   const router = useRouter()
 
-  const handlesignup = () => {
-    router.push('/signup')
-  }
+  // const handlesignup = () => {
+  //   router.push('/signup')
+  // }
   const handlesignin = () => {
     router.push('/login')
   }
@@ -29,7 +29,7 @@ export function NavAuth() {
           <span className="ml-2">Login</span>
         </SidebarMenuButton>
       </SidebarMenuItem>
-      <SidebarMenuItem>
+      {/* <SidebarMenuItem>
         <SidebarMenuButton
           onClick={handlesignup}
           tooltip="Sign Up"
@@ -37,7 +37,7 @@ export function NavAuth() {
           <UserPlus className="h-4 w-4" />
           <span className="ml-2">Sign Up</span>
         </SidebarMenuButton>
-      </SidebarMenuItem>
+      </SidebarMenuItem> */}
     </SidebarMenu>
   )
 }
