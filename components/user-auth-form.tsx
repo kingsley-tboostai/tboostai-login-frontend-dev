@@ -1,130 +1,120 @@
-"use client"
+'use client';
 
-import * as React from "react"
-import { Loader2, Chrome } from 'lucide-react'
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useToast } from "@/hooks/use-toast"
-import { useRouter } from 'next/navigation'
-import { authApi } from '@/lib/axios'
-import { getAuth } from "@/lib/auth"
+import * as React from 'react';
+import { Loader2, Chrome } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
+import { authApi } from '@/lib/axios';
 // interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
-export function UserAuthForm({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false)
-  const [email, setEmail] = React.useState("")
-  const { toast } = useToast()
-  const router = useRouter()
+export function UserAuthForm({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [email, setEmail] = React.useState('');
+  const { toast } = useToast();
+  const router = useRouter();
 
   async function onSubmit(event: React.SyntheticEvent) {
-   event.preventDefault();
-   setIsLoading(true);
-   console.log('=== Email Login Process Started ===');
-   console.log('Email:', email);
+    event.preventDefault();
+    setIsLoading(true);
+    console.log('=== Email Login Process Started ===');
+    console.log('Email:', email);
 
-   try {
-     console.log('Requesting verification code...');
-     await authApi.post(
-       '/auth/email/request-code',
-       {
-         email: email,
-       },
-       {
-         headers: {
-           'Content-Type': 'application/json',
-         },
-       }
-     );
-     console.log('Verification code request successful');
+    try {
+      console.log('Requesting verification code...');
+      await authApi.post(
+        '/auth/email/request-code',
+        {
+          email: email,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      console.log('Verification code request successful');
 
-     console.log('Redirecting to verification page...');
-     router.push(`/login/verify-email?email=${encodeURIComponent(email)}`);
-   } catch (error) {
-     console.error('Request error:', error);
-     toast({
-       title: 'Error',
-       description:
-         error instanceof Error ? error.message : 'An unknown error occurred',
-       variant: 'destructive',
-     });
-   } finally {
-     setIsLoading(false);
-   }
-}
+      console.log('Redirecting to verification page...');
+      router.push(`/login/verify-email?email=${encodeURIComponent(email)}`);
+    } catch (error) {
+      console.error('Request error:', error);
+      toast({
+        title: 'Error',
+        description:
+          error instanceof Error ? error.message : 'An unknown error occurred',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   const handleGoogleSignIn = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      const { chatSessionId } = getAuth();
-      console.log('Current chat session:', {
-        exists: !!chatSessionId,
-        id: chatSessionId,
-      });
-
-      // if (!chatSessionId) {
-      //   console.log('Creating new chat session...');
-      //   const createResponse = await chatApi.post('/sessions/create');
-      //   const newSessionId = createResponse.data.chatSessionId;
-      //   console.log('New chat session created:', newSessionId);
-      //   localStorage.setItem('chat_session_id', newSessionId);
-      // }
-
       console.log('Requesting Google auth URL...');
-      const { data } = await authApi.get('/auth/google/url', {
-        params: {
-          session_id: getAuth().chatSessionId,
-        },
-      });
+      const { data } = await authApi.get('/auth/google/url');
       console.log('Google auth URL received:', data);
 
       if (data.url) {
         console.log('Redirecting to Google auth...');
-        window.location.href = data.url;
+        const url = data.url.startsWith('http')
+          ? data.url
+          : `${process.env.NEXT_PUBLIC_AUTH_BACKEND_URL}${data.url}`;
+        window.location.href = url;
       }
     } catch (error) {
-      console.error('Full error:', error)
+      console.error('Full error:', error);
       toast({
-        title: "Error signing in with Google",
-        description: error instanceof Error ? error.message : "An unknown error occurred",
-        variant: "destructive"
-      })
+        title: 'Error signing in with Google',
+        description:
+          error instanceof Error ? error.message : 'An unknown error occurred',
+        variant: 'destructive',
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
-    <div className={cn("grid gap-6", className)} {...props}>
-    <form onSubmit={onSubmit}>
-      <div className="grid gap-2">
-        <div className="grid gap-1">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+    <div className={cn('grid gap-6', className)} {...props}>
+      <form onSubmit={onSubmit}>
+        <div className="grid gap-2">
+          <div className="grid gap-1">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={isLoading}
+              required
+            />
+          </div>
+          <Button
             disabled={isLoading}
-            required
-          />
+            className="w-full text-white"
+            style={{ backgroundColor: '#2D5181' }}
+          >
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Continue with Email
+          </Button>
         </div>
-        <Button disabled={isLoading} className="w-full text-white" style={{ backgroundColor: '#2D5181' }}>
-          {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Continue with Email
-        </Button>
-      </div>
-    </form>
+      </form>
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            Or
-          </span>
+          <span className="bg-background px-2 text-muted-foreground">Or</span>
         </div>
       </div>
 
@@ -142,5 +132,5 @@ export function UserAuthForm({ className, ...props }: React.HTMLAttributes<HTMLD
         Continue with Google
       </Button>
     </div>
-  )
+  );
 }
