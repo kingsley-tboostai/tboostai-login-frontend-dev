@@ -60,12 +60,9 @@ export function UserAuthForm({
     setIsLoading(true);
     try {
       console.log('Requesting Google auth URL...');
-      console.log('Base URL:', process.env.NEXT_PUBLIC_AUTH_BACKEND_URL);
 
-      // 添加 http:// 协议前缀
-      const baseUrl = `http://${process.env.NEXT_PUBLIC_AUTH_BACKEND_URL}`;
-      const response = await fetch(`${baseUrl}/auth/google/url`);
-      const data = await response.json();
+      // 使用 authApi 实例
+      const { data } = await authApi.get('/auth/google/url');
       console.log('Google auth URL received:', data);
 
       if (data.url) {
