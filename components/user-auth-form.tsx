@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from 'next/navigation'
-import { authApi, chatApi } from '@/lib/axios'
+import { authApi } from '@/lib/axios'
 import { getAuth } from "@/lib/auth"
 // interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -63,13 +63,13 @@ export function UserAuthForm({ className, ...props }: React.HTMLAttributes<HTMLD
         id: chatSessionId,
       });
 
-      if (!chatSessionId) {
-        console.log('Creating new chat session...');
-        const createResponse = await chatApi.post('/sessions/create');
-        const newSessionId = createResponse.data.chatSessionId;
-        console.log('New chat session created:', newSessionId);
-        localStorage.setItem('chat_session_id', newSessionId);
-      }
+      // if (!chatSessionId) {
+      //   console.log('Creating new chat session...');
+      //   const createResponse = await chatApi.post('/sessions/create');
+      //   const newSessionId = createResponse.data.chatSessionId;
+      //   console.log('New chat session created:', newSessionId);
+      //   localStorage.setItem('chat_session_id', newSessionId);
+      // }
 
       console.log('Requesting Google auth URL...');
       const { data } = await authApi.get('/auth/google/url', {

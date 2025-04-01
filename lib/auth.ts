@@ -9,12 +9,12 @@ export interface User {
 // 保存认证信息
 export const setAuth = (token: string, user: User, sessionId?: string) => {
   clearAuth();
-  localStorage.removeItem('chat_session_id');
+  localStorage.removeItem('chat_session');
 
   localStorage.setItem('token', token);
   localStorage.setItem('user', JSON.stringify(user));
   if (sessionId) {
-    localStorage.setItem('chat_session_id', sessionId);
+    localStorage.setItem('chat_session', sessionId);
   }
 };
 
@@ -25,7 +25,7 @@ export const getAuth = () => {
   }
   const token = localStorage.getItem('token');
   const userStr = localStorage.getItem('user');
-  const chatSessionId = localStorage.getItem('chat_session_id');
+  const chatSessionId = localStorage.getItem('chat_session');
   return {
     token,
     user: userStr ? JSON.parse(userStr) : null,
@@ -37,7 +37,7 @@ export const getAuth = () => {
 export const clearAuth = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
-  localStorage.removeItem('chat_session_id');
+  localStorage.removeItem('chat_session');
 };
 
 // 检查是否已认证
