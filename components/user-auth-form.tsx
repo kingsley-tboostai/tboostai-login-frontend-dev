@@ -60,15 +60,17 @@ export function UserAuthForm({
     setIsLoading(true);
     try {
       console.log('Requesting Google auth URL...');
-      const { data } = await authApi.get('/auth/google/url');
+      console.log('Base URL:', process.env.NEXT_PUBLIC_AUTH_BACKEND_URL);
+
+      // 添加 http:// 协议前缀
+      const baseUrl = `http://${process.env.NEXT_PUBLIC_AUTH_BACKEND_URL}`;
+      const response = await fetch(`${baseUrl}/auth/google/url`);
+      const data = await response.json();
       console.log('Google auth URL received:', data);
 
       if (data.url) {
         console.log('Redirecting to Google auth...');
-        const url = data.url.startsWith('http')
-          ? data.url
-          : `${process.env.NEXT_PUBLIC_AUTH_BACKEND_URL}${data.url}`;
-        window.location.href = url;
+        window.location.href = data.url;
       }
     } catch (error) {
       console.error('Full error:', error);
